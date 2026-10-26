@@ -1,5 +1,6 @@
 ﻿
 using System;
+using System.Runtime.CompilerServices;
 
 namespace ClinicApp
 {
@@ -31,6 +32,30 @@ namespace ClinicApp
             Console.WriteLine(p3);
             Console.WriteLine(p4);
             Console.WriteLine(p5);
+
+            Console.WriteLine("\n");
+
+            Doctor d1 = new Doctor(
+                "Олег", "Сидоренко",
+                "Кардіологія", "001",
+                "0441234567"
+            );
+            Doctor d2 = new Doctor(
+                "Наталя", "Мороз",
+                "Неврологія", "002",
+                "0442345678"
+            );
+            d1.WorkStartHour = 8;
+            d1.WorkEndHour = 16;
+            Doctor d3 = new Doctor(
+              "Андрій", "Власенко",
+              "Педіатрія", "003",
+              "0443456789"  
+            );
+
+            Console.WriteLine(d1);
+            Console.WriteLine(d2);
+            Console.WriteLine(d3);
         }
     }
 }
