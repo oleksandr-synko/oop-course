@@ -85,7 +85,7 @@ public class Patient
 
     public override string ToString()
     {
-        return $"[{Id}] {FullName}, Вік: {Age} " +
-               $"({GetAgeCategory()}), Кров: {BloodType}, Тел: {Phone}";
+        return $"[{Id}] {FullName} | Вік: {Age} " +
+               $"({GetAgeCategory()}) | Кров: {BloodType} | Тел: {Phone}";
     }
 }

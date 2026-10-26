@@ -11,21 +11,26 @@ namespace ClinicApp
             Patient p1 = new Patient(
                 "Іван", "Петренко",
                 new DateTime(1985, 5, 10),
-                "A+", "0501234567");
+                "A+", "0501234567"
+                );
 
             Patient p2 = new Patient(
                 "Олена", "Коваль",
                 new DateTime(1993, 3, 15),
-                "B-", "0672345678");
+                "B-", "0672345678"
+                );
 
             Patient p3 = new Patient(
                 "Максим", "Бойко",
                 new DateTime(2010, 8, 20),
-                "O+", "0933456789");
+                "O+", "0933456789"
+                );
 
             Patient p4 = new Patient();
 
-            Patient p5 = new Patient("Марія", "Ткач");
+            Patient p5 = new Patient(
+                "Марія", "Ткач"
+                );
 
             Console.WriteLine(p1);
             Console.WriteLine(p2);
@@ -56,6 +61,17 @@ namespace ClinicApp
             Console.WriteLine(d1);
             Console.WriteLine(d2);
             Console.WriteLine(d3);
+
+            Console.WriteLine("/n");
+
+            PatientManager manager = new PatientManager();
+            manager.Add(p1);
+            manager.Add(p2);
+            manager.Add(p3);
+            manager.Add(p4);
+            manager.Add(p5);
+            manager.DisplayAll();
+            manager.DisplayStatus();
         }
     }
 }
