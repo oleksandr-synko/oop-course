@@ -72,6 +72,14 @@ namespace ClinicApp
             manager.Add(p5);
             manager.DisplayAll();
             manager.DisplayStatus();
+
+
+            DoctorManager doctorManager = new DoctorManager();
+            doctorManager.Add(d1);
+            doctorManager.Add(d2);
+            doctorManager.Add(d3);
+            doctorManager.DisplayAll();
+            doctorManager.DisplayStats();
         }
     }
 }
