@@ -21,7 +21,7 @@ public class DoctorManager
 
     public Doctor? FindById(int id)
     {
-        for(int i = 0; _count < i; i++)
+        for(int i = 0; _count > i; i++)
         {
             if(_doctors[i].Id == id)
             {

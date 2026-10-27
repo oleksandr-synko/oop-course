@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Runtime.CompilerServices;
 
 namespace ClinicApp
@@ -64,14 +63,14 @@ namespace ClinicApp
 
             Console.WriteLine("/n");
 
-            PatientManager manager = new PatientManager();
-            manager.Add(p1);
-            manager.Add(p2);
-            manager.Add(p3);
-            manager.Add(p4);
-            manager.Add(p5);
-            manager.DisplayAll();
-            manager.DisplayStatus();
+            PatientManager patientManager  = new PatientManager();
+            patientManager.Add(p1);
+            patientManager.Add(p2);
+            patientManager.Add(p3);
+            patientManager.Add(p4);
+            patientManager.Add(p5);
+            patientManager.DisplayAll();
+            patientManager.DisplayStatus();
 
 
             DoctorManager doctorManager = new DoctorManager();
@@ -109,6 +108,47 @@ namespace ClinicApp
             a2.Complete();
             Console.WriteLine(a1);
             Console.WriteLine(a2);
+
+            AppointmentManager appointmentManager =
+    new AppointmentManager(patientManager, doctorManager);
+
+// Створення записів
+bool b1 = appointmentManager.Book(
+    1, 1, new DateTime(2026, 11, 9, 10, 0, 0));
+
+bool b2 = appointmentManager.Book(
+    2, 2, new DateTime(2026, 11, 9, 11, 0, 0), 45);
+
+bool b3 = appointmentManager.Book(
+    3, 3, new DateTime(2026, 11, 10, 9, 0, 0), 20);
+
+if (b1)
+    Console.WriteLine(
+        "Запис [1] створено: Іван Петренко → Олег Сидоренко о 09.11.2026 10:00");
+
+if (!b1 || !b2 || !b3)
+    Console.WriteLine("Помилка: не вдалося створити один або декілька записів.");
+
+// Спроба запису неіснуючого пацієнта
+if (!appointmentManager.Book(
+    99, 1, new DateTime(2026, 11, 9, 12, 0, 0)))
+{
+    Console.WriteLine("Помилка: пацієнта з ID 99 не знайдено.");
+}
+
+// Майбутні записи
+Console.WriteLine("\nМайбутні записи:");
+appointmentManager.DisplayList(
+    appointmentManager.GetUpcoming());
+
+// Скасування першого запису
+if (appointmentManager.Cancle(1, "Пацієнт не зміг прийти"))
+    Console.WriteLine("\nЗапис [1] скасовано.");
+
+// Записи пацієнта №2
+Console.WriteLine("\nЗаписи пацієнта #2:");
+appointmentManager.DisplayList(
+    appointmentManager.GetByPetient(2));
         }
     }
 }
