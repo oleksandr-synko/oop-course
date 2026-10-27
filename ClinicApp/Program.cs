@@ -80,6 +80,35 @@ namespace ClinicApp
             doctorManager.Add(d3);
             doctorManager.DisplayAll();
             doctorManager.DisplayStats();
+
+            Console.WriteLine("\n");
+
+            Appointment a1 = new Appointment(
+                1,
+                1,
+                new DateTime(2026, 05, 09, 10, 0, 0)
+            );
+            Appointment a2 = new Appointment(
+                2,
+                2,
+                new DateTime(2026, 05, 09, 11, 0, 0),
+                45
+            );
+            Appointment a3 = new Appointment(
+                3,
+                3,
+                new DateTime(2026, 05, 10, 9, 0, 0),
+                20
+            );
+            Console.WriteLine(a1);
+            Console.WriteLine(a2);
+            Console.WriteLine(a3);
+            Console.WriteLine("\n");
+            Console.WriteLine("Після Cancle та Comolete");
+            a1.Cancle("Пацієнт не зміг прийти");
+            a2.Complete();
+            Console.WriteLine(a1);
+            Console.WriteLine(a2);
         }
     }
 }
