@@ -76,6 +76,11 @@ namespace ClinicApp
 
             for(int i = 1; i <= 20; i++)
             {
+                Patient patient = new Patient(
+                "Тест", $"Пацієнт{i}",
+                new DateTime(2000, 1, 1),
+                "A+", "0500000000");
+                manager.Add(patient);
                 if(i <= 9 || i == 20)
                 {
                     Console.WriteLine($"Додано [{i}]. Розмір: {manager.Count} / {manager.Capacity}");
@@ -94,6 +99,10 @@ namespace ClinicApp
             Patient? missing = manager.FindById(99);
             Console.WriteLine(missing != null ? $"FindById(99) => {missing.FullName}"
             : "FindById(99) => не знайдено");
+            
+            Console.WriteLine("\nПорівняння:");
+            Console.WriteLine("  PatientManager          100 місць (фіксовано)");
+            Console.WriteLine($"  GrowablePatientManager  {manager.Capacity} місця (зросте при потребі)");
         }
     }
 }
