@@ -53,16 +53,47 @@ namespace ClinicApp
             clinic.Doctors.Add(d3);
 
             clinic.Appointments.Book(
-                1, 1, new DateTime(2026, 11, 9, 10, 0, 0));
+                1,
+                1,
+                new DateTime(2026, 05, 9, 10, 0, 0));
 
             clinic.Appointments.Book(
-                2, 2, new DateTime(2026, 11, 9, 11, 0, 0), 45);
+                2, 
+                2, 
+                new DateTime(2026, 05, 9, 11, 0, 0), 45);
 
             clinic.Appointments.Book(
-                3, 3, new DateTime(2026, 11, 10, 9, 0, 0), 20);
+                3, 
+                3, 
+                new DateTime(2026, 05, 10, 9, 0, 0), 20);
 
-            clinic.DisplaySchedule(new DateTime(2026, 11, 9));
+            clinic.DisplaySchedule(new DateTime(2026, 05, 9));
             clinic.GenerateReport(5, 3);
+
+            Console.WriteLine("=== Тест GrowablePatientManager ===");
+            Console.WriteLine("Додаємо пацієнтів одного за одним...");
+            GrowablePatientManager manager = new GrowablePatientManager();
+
+            for(int i = 1; i <= 20; i++)
+            {
+                if(i <= 9 || i == 20)
+                {
+                    Console.WriteLine($"Додано [{i}]. Розмір: {manager.Count} / {manager.Capacity}");
+                }
+                else if(i == 10)
+                {
+                    Console.WriteLine("...");
+                }
+            }
+
+            Console.WriteLine("\nТест пошук:");
+            Patient? found = manager.FindById(10);
+            Console.WriteLine(found != null ? $"FindById(10) => {found.FullName}"
+            : "FindById(10) => не знайдено");
+
+            Patient? missing = manager.FindById(99);
+            Console.WriteLine(missing != null ? $"FindById(99) => {missing.FullName}"
+            : "FindById(99) => не знайдено");
         }
     }
 }
