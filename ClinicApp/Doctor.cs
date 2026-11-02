@@ -77,7 +77,7 @@ public class Doctor
     {
         string status = IsAvailableNow ? "доступний зараз" : "не в робочий час";
 
-        return $"[{Id}] {FullName} | {Speciality} | LIC-{LicenseNumber} | " +
-        $"Тел.{Phone} | {WorkSchedule} ({WorkingHoursPerDay}год) | {status}";
-    } 
+        return $"[{Id}] {FullName} | {ClinicFormatter.FormatSpeciality(Speciality)} | LIC-{LicenseNumber} | " +
+            $"Тел.{ClinicFormatter.FormatPhone(Phone)} | {WorkSchedule} ({WorkingHoursPerDay}год) | {status}";
+    }
 }
