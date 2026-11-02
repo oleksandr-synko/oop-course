@@ -2,7 +2,7 @@ using System;
 
 using ClinicApp.Models;
 using ClinicApp.Enums;
-namespace ClinicApp;
+namespace ClinicApp.Managers;
 public class PatientManager
 {
     private const int MaxPatients = 100;
