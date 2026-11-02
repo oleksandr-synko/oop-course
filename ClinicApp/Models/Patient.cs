@@ -13,26 +13,56 @@ public class Patient
     public string FirstName
     {
         get => _firstName;
-        set => _firstName = value;
+        set
+        {
+            if (string.IsNullOrWhiteSpace(value) || value.Length > 50)
+                throw new ArgumentException("Ім'я має містити від 1 до 50 символів.", nameof(FirstName));
+
+            _firstName = value;
+        }
     }
     private string _lastName = "";
     public string LastName
     {
         get => _lastName;
-        set => _lastName = value;
+        set
+        {
+            if (string.IsNullOrWhiteSpace(value) || value.Length > 50)
+                throw new ArgumentException("Прізвище має містити від 1 до 50 символів.", nameof(LastName));
+
+            _lastName = value;
+        }
     }
     private DateTime _dateOfBirth;
     public DateTime DateOfBirth
     {
         get => _dateOfBirth;
-        set => _dateOfBirth = value;
+        set
+        {
+            if (value < new DateTime(1900, 1, 1) || value > DateTime.Today)
+                throw new ArgumentOutOfRangeException(nameof(DateOfBirth), "Дата народження має бути між 1900 роком і сьогодні.");
+
+            _dateOfBirth = value;
+        }
     }
     public BloodType BloodType { get; set; }
     private string _phone = "";
     public string Phone
     {
         get => _phone;
-        set => _phone = value;
+        set
+        {
+            if (value == null || value.Length != 10)
+                throw new ArgumentException("Номер телефону має містити рівно 10 цифр.", nameof(Phone));
+
+            foreach (char digit in value)
+            {
+                if (!char.IsDigit(digit))
+                    throw new ArgumentException("Номер телефону має містити лише цифри.", nameof(Phone));
+            }
+
+            _phone = value;
+        }
     }
     public string Email { get; set; }
 
@@ -84,14 +114,13 @@ public class Patient
         BloodType bloodType,
         string phone)
     {
-        Id = _nextId++;
-
         FirstName = firstName;
         LastName = lastName;
         DateOfBirth = dob;
         BloodType = bloodType;
         Phone = phone;
         Email = "";
+        Id = _nextId++;
     }
 
     public string GetAgeCategory()

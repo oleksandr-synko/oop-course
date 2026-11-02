@@ -14,39 +14,69 @@ public class Doctor
     public string FirstName
     {
         get => _firstName;
-        set => _firstName = value;
+        set
+        {
+            if (string.IsNullOrWhiteSpace(value) || value.Length > 50)
+                throw new ArgumentException("Ім'я має містити від 1 до 50 символів.", nameof(FirstName));
+
+            _firstName = value;
+        }
     }
     private string _lastName = "";
     public string LastName
     {
         get => _lastName;
-        set => _lastName = value;
+        set
+        {
+            if (string.IsNullOrWhiteSpace(value) || value.Length > 50)
+                throw new ArgumentException("Прізвище має містити від 1 до 50 символів.", nameof(LastName));
+
+            _lastName = value;
+        }
     }
     public Speciality Speciality { get; set; }
     private string _licenseNumber = "";
     public string LicenseNumber
     {
         get => _licenseNumber;
-        set => _licenseNumber = value;
+        set
+        {
+            if (string.IsNullOrWhiteSpace(value))
+                throw new ArgumentException("Номер ліцензії не може бути порожнім.", nameof(LicenseNumber));
+
+            _licenseNumber = value;
+        }
     }
     private string _phone = "";
     public string Phone
     {
         get => _phone;
-        set => _phone = value;
+        set
+        {
+            if (value == null || value.Length != 10)
+                throw new ArgumentException("Номер телефону має містити рівно 10 цифр.", nameof(Phone));
+
+            foreach (char digit in value)
+            {
+                if (!char.IsDigit(digit))
+                    throw new ArgumentException("Номер телефону має містити лише цифри.", nameof(Phone));
+            }
+
+            _phone = value;
+        }
     }
     public WorkSchedule Schedule { get; set; }
 
 
     public Doctor()
     {
-        Id = _nextId++;
         FirstName = "Невідомий";
         LastName = "Лікар";
-        Speciality = Speciality = Speciality.Unknown;;
+        Speciality = Speciality.Unknown;;
         LicenseNumber = "Невідомо";
         Phone = "0000000000";
         Schedule = new WorkSchedule(8, 17);
+        Id = _nextId++;
     }
 
 
