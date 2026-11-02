@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
+using ClinicApp.Models;
+using ClinicApp.Enums;
+
 namespace ClinicApp
 {
     internal class Program

@@ -1,5 +1,6 @@
 using System;
 
+using ClinicApp.Enums;
 namespace ClinicApp;
 
 public class Appointment
