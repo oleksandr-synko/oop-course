@@ -10,7 +10,7 @@ public class Doctor
 
     public string FirstName { get; set; }
     public string LastName { get; set; }
-    public string Speciality { get; set; }
+    public Speciality Speciality { get; set; }
     public string LicenseNumber { get; set; }
     public string Phone { get; set; }
     public int WorkStartHour { get; set; }
@@ -22,7 +22,7 @@ public class Doctor
         Id = _nextId++;
         FirstName = "Невідомий";
         LastName = "Лікар";
-        Speciality = "Не вказано";
+        Speciality = Speciality = Speciality.Unknown;;
         LicenseNumber = "Невідомо";
         Phone = "0000000000";
         WorkStartHour = 8;
@@ -30,7 +30,7 @@ public class Doctor
     }
 
 
-    public Doctor(string firstName, string lastName, string speciality)
+    public Doctor(string firstName, string lastName, Speciality speciality)
         : this()
     {
         FirstName = firstName;
@@ -39,7 +39,7 @@ public class Doctor
     }
 
 
-    public Doctor(string firstName, string lastName, string speciality, string licenseNumber, string phone)
+    public Doctor(string firstName, string lastName, Speciality speciality, string licenseNumber, string phone)
     : this(firstName, lastName, speciality  )
     {
         LicenseNumber = licenseNumber;

@@ -31,12 +31,12 @@ public class DoctorManager
         return null;
     }
 
-    public Doctor[] FindBySpeciality(string speciality)
+    public Doctor[] FindBySpeciality(Speciality speciality)
     {
         int number = 0;
         for(int i = 0; i < _count; i++)
         {
-            if(_doctors[i].Speciality.Contains(speciality, StringComparison.OrdinalIgnoreCase))
+            if (_doctors[i].Speciality == speciality)
             {
                 number++;
             }
@@ -46,7 +46,7 @@ public class DoctorManager
             
             for(int i = 0; i < _count; i++)
             {
-                if(_doctors[i].Speciality.Contains(speciality, StringComparison.OrdinalIgnoreCase))
+                if (_doctors[i].Speciality == speciality)
                 {
                     results[ind] = _doctors[i];
                     ind++;
@@ -132,10 +132,7 @@ public class DoctorManager
 
         for (int j = 0; j < i; j++)
         {
-            if (string.Equals(
-                _doctors[i].Speciality,
-                _doctors[j].Speciality,
-                StringComparison.OrdinalIgnoreCase))
+            if (_doctors[i].Speciality == _doctors[j].Speciality)
             {
                 alreadyExists = true;
                 break;
@@ -151,10 +148,7 @@ public class DoctorManager
 
         for (int j = 0; j < _count; j++)
         {
-            if (string.Equals(
-                _doctors[i].Speciality,
-                _doctors[j].Speciality,
-                StringComparison.OrdinalIgnoreCase))
+            if (_doctors[i].Speciality == _doctors[j].Speciality)
             {
                 specialityCount++;
             }

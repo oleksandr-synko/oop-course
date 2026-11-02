@@ -11,18 +11,18 @@ public class Appointment
     public int DoctorId { get; }
     public DateTime ScheduledAt { get; set; }
     public int DurationMinutes { get; set; }
-    public string Status { get; private set; }
+    public AppointmentStatus Status { get; private set; }
     public string Notes { get; private set; }
 
 
     public Appointment(int patientId, int doctorId, DateTime scheduledAt, int durationMinutes = 30)
     {
-        Id = _nextId;
+        Id = _nextId++;
         PatientId = patientId;
         DoctorId = doctorId;
         ScheduledAt = scheduledAt;
         DurationMinutes = durationMinutes;
-        Status = "Scheduled";
+        Status = AppointmentStatus.Scheduled;
         Notes = "";
     }
 
@@ -30,7 +30,7 @@ public class Appointment
     {
         get
         {
-            if( ScheduledAt > DateTime.Now && Status == "Scheduled")
+            if( ScheduledAt > DateTime.Now && Status == AppointmentStatus.Scheduled)
             {
                 return true;
             }
@@ -40,9 +40,9 @@ public class Appointment
 
     public bool Cancle(string reason)
     {
-        if( Status == "Scheduled")
+        if(Status == AppointmentStatus.Scheduled)
         {
-            Status = "Cancelled";
+            Status = AppointmentStatus.Cancelled;;
             Notes = reason;
             return true;
         }
@@ -54,9 +54,9 @@ public class Appointment
 
     public bool Complete()
     {
-        if ( Status == "Scheduled")
+        if(Status == AppointmentStatus.Scheduled)
         {
-            Status = "Complete";
+            Status = AppointmentStatus.Completed;
             return true;
         }
         else
