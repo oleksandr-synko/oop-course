@@ -102,6 +102,26 @@ namespace ClinicApp
             Console.WriteLine("\nПорівняння:");
             Console.WriteLine("  PatientManager          100 місць (фіксовано)");
             Console.WriteLine($"  GrowablePatientManager  {manager.Capacity} місця (зросте при потребі)");
+
+            Console.WriteLine("\n=== Тест TryFindById ===");
+
+            if (clinic.Patients.TryFindById(1, out Patient? foundPatient))
+            {
+                Console.WriteLine($"Пацієнта знайдено: {foundPatient.FullName}");
+            }
+            else
+            {
+                Console.WriteLine("Пацієнта не знайдено");
+            }
+
+            if (clinic.Doctors.TryFindById(1, out Doctor? doctor))
+            {
+                Console.WriteLine($"Лікаря знайдено: {doctor.FullName}");
+            }
+            else
+            {
+                Console.WriteLine("Лікаря не знайдено");
+            }
         }
     }
 }

@@ -47,6 +47,40 @@ public class PatientManager
         return null;
     }
 
+    public bool TryFindById(int id, out Patient? patient)
+    {
+        patient = FindById(id);
+
+        return patient != null;
+    }
+
+    public Patient[] FindByBloodType(BloodType bloodType)
+    {
+        int number = 0;
+
+        for (int i = 0; i < _count; i++)
+        {
+            if (_patients[i].BloodType == bloodType)
+            {
+                number++;
+            }
+        }
+
+        Patient[] results = new Patient[number];
+        int ind = 0;
+
+        for (int i = 0; i < _count; i++)
+        {
+            if (_patients[i].BloodType == bloodType)
+            {
+                results[ind] = _patients[i];
+                ind++;
+            }
+        }
+
+        return results;
+}
+
     public Patient[] FindByName(string name)
         {
             int number = 0;

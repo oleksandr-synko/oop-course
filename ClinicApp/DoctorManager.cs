@@ -31,6 +31,12 @@ public class DoctorManager
         return null;
     }
 
+    public bool TryFindById(int id, out Doctor? doctor)
+    {
+        doctor = FindById(id);
+        return doctor != null;
+    }
+
     public Doctor[] FindBySpeciality(Speciality speciality)
     {
         int number = 0;
@@ -53,6 +59,35 @@ public class DoctorManager
                 }
             }
             return results;
+    }
+
+    public Doctor[] FindBySpeciality(string query)
+    {
+        int number = 0;
+
+        for (int i = 0; i < _count; i++)
+        {
+            if (ClinicFormatter.FormatSpeciality(_doctors[i].Speciality)
+                .Contains(query, StringComparison.OrdinalIgnoreCase))
+            {
+                number++;
+            }
+        }
+
+        Doctor[] results = new Doctor[number];
+        int ind = 0;
+
+        for (int i = 0; i < _count; i++)
+        {
+            if (ClinicFormatter.FormatSpeciality(_doctors[i].Speciality)
+                .Contains(query, StringComparison.OrdinalIgnoreCase))
+            {
+                results[ind] = _doctors[i];
+                ind++;
+            }
+        }
+
+        return results;
     }
 
     public Doctor[] GetAll()
