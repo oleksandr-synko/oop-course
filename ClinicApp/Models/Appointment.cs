@@ -1,7 +1,7 @@
 using System;
 
 using ClinicApp.Enums;
-namespace ClinicApp;
+namespace ClinicApp.Models;
 
 public class Appointment
 {
@@ -11,7 +11,12 @@ public class Appointment
     public int PatientId { get; }
     public int DoctorId { get; }
     public DateTime ScheduledAt { get; set; }
-    public int DurationMinutes { get; set; }
+    private int _durationMinutes;
+    public int DurationMinutes
+    {
+        get => _durationMinutes;
+        set => _durationMinutes = value;
+    }
     public AppointmentStatus Status { get; private set; }
     public string Notes { get; private set; }
 

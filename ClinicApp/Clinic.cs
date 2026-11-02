@@ -1,6 +1,6 @@
-
 using System;
 
+using ClinicApp.Models;
 namespace ClinicApp;
 
 public class Clinic

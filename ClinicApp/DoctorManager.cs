@@ -1,5 +1,6 @@
 using System;
 
+using ClinicApp.Models;
 using ClinicApp.Utils;
 using ClinicApp.Enums;
 namespace ClinicApp;

@@ -1,9 +1,8 @@
 using System;
 
-using ClinicApp.Models;
 using ClinicApp.Utils;
 using ClinicApp.Enums;
-namespace ClinicApp;
+namespace ClinicApp.Models;
 
 public class Doctor
 {
@@ -11,11 +10,31 @@ public class Doctor
     
     public int Id { get; }
 
-    public string FirstName { get; set; }
-    public string LastName { get; set; }
+    private string _firstName = "";
+    public string FirstName
+    {
+        get => _firstName;
+        set => _firstName = value;
+    }
+    private string _lastName = "";
+    public string LastName
+    {
+        get => _lastName;
+        set => _lastName = value;
+    }
     public Speciality Speciality { get; set; }
-    public string LicenseNumber { get; set; }
-    public string Phone { get; set; }
+    private string _licenseNumber = "";
+    public string LicenseNumber
+    {
+        get => _licenseNumber;
+        set => _licenseNumber = value;
+    }
+    private string _phone = "";
+    public string Phone
+    {
+        get => _phone;
+        set => _phone = value;
+    }
     public WorkSchedule Schedule { get; set; }
 
 
