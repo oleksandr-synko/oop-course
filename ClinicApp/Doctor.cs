@@ -13,8 +13,7 @@ public class Doctor
     public Speciality Speciality { get; set; }
     public string LicenseNumber { get; set; }
     public string Phone { get; set; }
-    public int WorkStartHour { get; set; }
-    public int WorkEndHour { get; set; }
+    public WorkSchedule Schedule { get; set; }
 
 
     public Doctor()
@@ -25,8 +24,7 @@ public class Doctor
         Speciality = Speciality = Speciality.Unknown;;
         LicenseNumber = "Невідомо";
         Phone = "0000000000";
-        WorkStartHour = 8;
-        WorkEndHour = 17;
+        Schedule = new WorkSchedule(8, 17);
     }
 
 
@@ -54,29 +52,24 @@ public class Doctor
 
     public int WorkingHoursPerDay
     {
-        get{ return WorkEndHour - WorkStartHour; }
+        get { return Schedule.HoursPerDay; }
     }
 
     public string WorkSchedule
-    {
-        get{ return $"{WorkStartHour:D2}:00—{WorkEndHour:D2}:00"; }
-    }
+{
+    get { return Schedule.Display; }
+}
 
 
     public bool IsAvailableNow
     {
-        get
-        {
-            int currentHour = DateTime.Now.Hour;
-            return currentHour >= WorkStartHour && currentHour < WorkEndHour;
-        }
+        get { return Schedule.IsNow; }
     }
 
 
     public bool CanAcceptAt(int hour)
     {
-        return hour >= WorkStartHour && hour < WorkEndHour;
-        
+        return Schedule.Contains(hour);
     }
 
 

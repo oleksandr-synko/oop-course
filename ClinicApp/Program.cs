@@ -45,8 +45,7 @@ namespace ClinicApp
                 "Андрій", "Власенко",
                 Speciality.Pediatrician, "003", "0443456789");
 
-            d1.WorkStartHour = 8;
-            d1.WorkEndHour = 16;
+            d1.Schedule = new WorkSchedule(8, 16);
 
             clinic.Doctors.Add(d1);
             clinic.Doctors.Add(d2);
