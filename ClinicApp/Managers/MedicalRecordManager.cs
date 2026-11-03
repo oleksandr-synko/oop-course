@@ -69,6 +69,72 @@ public class MedicalRecordManager
             .ToArray();
     }
 
+    public Diagnosis[] GetDiagnoses(int patientId)
+    {
+        return GetAll()
+            .Where(r => r.PatientId == patientId)
+            .OfType<Diagnosis>()
+            .ToArray();
+    }
+
+    public LabResult[] GetLabResults(int patientId)
+    {
+        return GetAll()
+            .Where(r => r.PatientId == patientId)
+            .OfType<LabResult>()
+            .ToArray();
+    }
+
+    public Prescription[] GetPrescriptions(int patientId)
+    {
+        return GetAll()
+            .Where(r => r.PatientId == patientId)
+            .OfType<Prescription>()
+            .ToArray();
+    }
+
+    public Diagnosis[] GetChronicDiagnoses(int patientId)
+    {
+        return GetAll()
+            .Where(r => r.PatientId == patientId)
+            .OfType<Diagnosis>()
+            .Where(d => d.IsChronic)
+            .ToArray();
+    }
+
+    public Prescription[] GetActivePrescriptions(int patientId)
+    {
+        return GetAll()
+            .Where(r => r.PatientId == patientId)
+            .OfType<Prescription>()
+            .Where(p => p.IsActive)
+            .ToArray();
+    }
+
+    public void DisplayPatientSummary(int patientId)
+    {
+        MedicalRecord[] records = GetAll()
+            .Where(r => r.PatientId == patientId)
+            .ToArray();
+
+        if (records.Length == 0)
+        {
+            Console.WriteLine($"Пацієнт #{patientId} не має медичних записів.");
+            return;
+        }
+        int diagnosisCount = records.OfType<Diagnosis>().Count();
+        int labResultCount = records.OfType<LabResult>().Count();
+        int prescriptionCount = records.OfType<Prescription>().Count();
+
+        Console.WriteLine($"\n=== Медична картка пацієнта #{patientId} ===");
+        Console.WriteLine(
+            $"Всього записів: {records.Length} (діагнозів: {diagnosisCount}, аналізів: {labResultCount}, рецептів: {prescriptionCount})");
+        foreach (MedicalRecord record in records)
+        {
+            Console.WriteLine(record);
+        }
+    }
+
     public LabResult[] GetLabResults()
     {
         return GetAll()
