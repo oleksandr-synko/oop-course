@@ -54,7 +54,22 @@ public class Patient
             _phone = value;
         }
     }
-    public string Email { get; set; }
+    private string _email = "";
+
+    public string Email
+    {
+        get => _email;
+        set
+        {
+            if (string.IsNullOrEmpty(value))
+                _email = "";
+            else
+            {
+                ClinicValidator.ValidateEmail(value);
+                _email = value;
+            }
+        }
+    }
 
     public string FullName
     {

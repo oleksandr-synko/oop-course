@@ -1,3 +1,6 @@
+using System;
+using System.Text.RegularExpressions;
+
 namespace ClinicApp.Utils;
 
 public static class ClinicValidator
@@ -12,18 +15,18 @@ public static class ClinicValidator
 
     public static void ValidatePhone(string phone)
     {
-        if (phone == null || phone.Length != 10)
+        if (!Regex.IsMatch(phone, @"\A[0-9]{10}\z"))
             throw new ArgumentException(
                 "Номер телефону має містити рівно 10 цифр.",
                 nameof(phone));
+    }
 
-        foreach (char digit in phone)
-        {
-            if (!char.IsDigit(digit))
-                throw new ArgumentException(
-                    "Номер телефону має містити лише цифри.",
-                    nameof(phone));
-        }
+    public static void ValidateEmail(string email)
+    {
+        if (!Regex.IsMatch(email, @"\A[^@\s]+@[^@\s]+\.[^@\s]+\z"))
+            throw new ArgumentException(
+                "Некоректний формат email.",
+                nameof(email));
     }
 
     public static void ValidateDate(DateTime value, string fieldName)
