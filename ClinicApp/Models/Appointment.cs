@@ -5,13 +5,13 @@ using ClinicApp.Utils;
 using ClinicApp.Enums;
 namespace ClinicApp.Models;
 
-public class Appointment : IPayable
+public class Appointment : IPayable, ICancellable
 {
     private bool _isPaid = false;
     public bool IsPaid => _isPaid;
     public void MarkPaid()
     {
-        if(Status != AppointmentStatus.Cancelled)
+        if(!IsCancelled)
         {
             _isPaid = true;
         }
@@ -37,6 +37,11 @@ public class Appointment : IPayable
             _durationMinutes = value;
         }
     }
+
+    public bool IsCancelled => Status == AppointmentStatus.Cancelled;
+    public string CancellationReason =>
+        IsCancelled ? Notes : "";
+
     public AppointmentStatus Status { get; private set; }
     public string Notes { get; private set; }
 
@@ -64,11 +69,11 @@ public class Appointment : IPayable
         }
     }
 
-    public bool Cancle(string reason)
+    public bool Cancel(string reason = "")
     {
-        if(Status == AppointmentStatus.Scheduled)
+        if (Status == AppointmentStatus.Scheduled)
         {
-            Status = AppointmentStatus.Cancelled;;
+            Status = AppointmentStatus.Cancelled;
             Notes = reason;
             return true;
         }

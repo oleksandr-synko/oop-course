@@ -1,5 +1,6 @@
 using System;
 
+using ClinicApp.Interfaces;
 using ClinicApp.Models;
 namespace ClinicApp.Managers;
 
@@ -47,7 +48,7 @@ public class AppointmentManager
         {
             if(_appointments[i].Id == id)
             {
-                return _appointments[i].Cancle(reason);
+                return _appointments[i].Cancel(reason);
             }
         }
         return false;   
@@ -55,9 +56,9 @@ public class AppointmentManager
 
     public bool Complete(int id)
     {
-        for(int i = 0; i < _count; i++)
+        for (int i = 0; i < _count; i++)
         {
-            if(_appointments[i].Id == id)
+            if (_appointments[i].Id == id)
             {
                 return _appointments[i].Complete();
             }
@@ -75,9 +76,9 @@ public class AppointmentManager
     public Appointment[] GetByPetient(int patientId)
     {
         int number = 0;
-        for(int i = 0; i < _count; i++)
+        for (int i = 0; i < _count; i++)
         {
-            if(_appointments[i].PatientId == patientId)
+            if (_appointments[i].PatientId == patientId)
             {
                 number++;
             }
@@ -100,9 +101,9 @@ public class AppointmentManager
     public Appointment[] GetByDoctor(int doctorId)
     {
         int number = 0;
-        for(int i = 0; i < _count; i++)
+        for (int i = 0; i < _count; i++)
         {
-            if(_appointments[i].DoctorId == doctorId)
+            if (_appointments[i].DoctorId == doctorId)
             {
                 number++;
             }
@@ -125,9 +126,9 @@ public class AppointmentManager
     public Appointment[] GetByDate(DateTime data)
     {
         int number = 0;
-        for(int i = 0; i < _count; i++)
+        for (int i = 0; i < _count; i++)
         {
-            if(_appointments[i].ScheduledAt.Date == data.Date)
+            if (_appointments[i].ScheduledAt.Date == data.Date)
             {
                 number++;
             }
@@ -156,7 +157,7 @@ public class AppointmentManager
     public Appointment[] GetUpcoming()
     {
         int number = 0;
-        for(int i = 0; i < _count; i++)
+        for (int i = 0; i < _count; i++)
         {
             if(_appointments[i].IsUpcoming == true)
             {
@@ -220,5 +221,20 @@ public class AppointmentManager
         {
             DisplayAppointment(appointments[i]);
         }
+    }
+
+    public static int CancelAll(ICancellable[] items, string reason = "")
+    {
+        int cancelledCount = 0;
+
+        foreach (ICancellable item in items)
+        {
+            if (item.Cancel(reason))
+            {
+                cancelledCount++;
+            }
+        }
+
+        return cancelledCount;
     }
 }
