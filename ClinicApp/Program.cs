@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Globalization;
 using System.Threading;
+using System.Linq;
 
+using ClinicApp.Interfaces;
 using ClinicApp.Managers;
 using ClinicApp.Models;
 using ClinicApp.Enums;
@@ -70,9 +72,7 @@ namespace ClinicApp
                 1,
                 1,
                 DateTime.Today,
-                "I10",
-                "Есенціальна гіпертензія",
-                "Контроль артеріального тиску",
+                "I10", "Есенціальна гіпертензія", "Контроль артеріального тиску",
                 true
             ));
 
@@ -80,9 +80,7 @@ namespace ClinicApp
                 1,
                 1,
                 DateTime.Today,
-                "J06.9",
-                "Гостра інфекція верхніх дихальних шляхів",
-                "Симптоматичне лікування",
+                "J06.9", "Гостра інфекція верхніх дихальних шляхів", "Симптоматичне лікування",
                 false
             ));
 
@@ -90,10 +88,7 @@ namespace ClinicApp
                 1,
                 1,
                 DateTime.Today,
-                "Гемоглобін",
-                145,
-                "г/л",
-                "120–160",
+                "Гемоглобін", 145, "г/л", "120–160",
                 true
             ));
 
@@ -101,10 +96,7 @@ namespace ClinicApp
                 1,
                 1,
                 DateTime.Today,
-                "Холестерин загальний",
-                6.5,
-                "ммоль/л",
-                "3.0–5.2",
+                "Холестерин загальний", 6.5, "ммоль/л", "3.0–5.2",
                 false
             ));
 
@@ -112,31 +104,23 @@ namespace ClinicApp
                 1,
                 1,
                 DateTime.Today,
-                "Лізиноприл",
-                "10 мг",
-                "Приймати 1 раз на день",
-                DateTime.Today.AddDays(-5),
-                DateTime.Today.AddDays(25)
+                "Лізиноприл", "10 мг", "Приймати 1 раз на день",
+                DateTime.Today.AddDays(-5), DateTime.Today.AddDays(25)
             ));
 
             clinic.MedicalRecords.Add(new Prescription(
                 2,
                 2,
                 DateTime.Today.AddDays(-30),
-                "Амоксицилін",
-                "500 мг",
-                "Приймати 3 рази на день",
-                DateTime.Today.AddDays(-30),
-                DateTime.Today.AddDays(-20)
+                "Амоксицилін", "500 мг", "Приймати 3 рази на день",
+                DateTime.Today.AddDays(-30), DateTime.Today.AddDays(-20)
             ));
 
             clinic.MedicalRecords.Add(new Diagnosis(
                 2,
                 2,
                 DateTime.Today,
-                "K29.7",
-                "Гастрит неуточнений",
-                "Дієта та спостереження",
+                "K29.7", "Гастрит неуточнений", "Дієта та спостереження",
                 false
             ));
 
@@ -144,10 +128,7 @@ namespace ClinicApp
                 3,
                 3,
                 DateTime.Today,
-                "Глюкоза",
-                5.1,
-                "ммоль/л",
-                "3.9–5.5",
+                "Глюкоза", 5.1, "ммоль/л", "3.9–5.5",
                 true
             ));
 
@@ -165,6 +146,41 @@ namespace ClinicApp
                 3, 
                 3, 
                 new DateTime(2026, 05, 10, 9, 0, 0), 20);
+
+            clinic.Appointments.Book(
+                1, 1,
+                new DateTime(2026, 11, 5, 10, 0, 0));
+
+            clinic.Appointments.Book(
+                1, 1,
+                new DateTime(2026, 11, 6, 10, 0, 0));
+
+            Appointment[] appointments = clinic.Appointments.GetAll();
+
+            Console.WriteLine($"Скасований запис #{appointments[1].Id} оплачено: {appointments[1].IsPaid}");
+
+            foreach (Appointment appointment in appointments)
+            {
+                Console.WriteLine($"Запис #{appointment.Id} | Вартість: {appointment.GetCost()} | Оплачено: {appointment.IsPaid}");
+            }
+
+            appointments[0].MarkPaid();
+            Console.WriteLine($"Після оплати запису #{appointments[0].Id}: {appointments[0].IsPaid}");
+
+            clinic.Appointments.Cancle(appointments[1].Id, "Тест скасування");
+            appointments[1].MarkPaid();
+            Console.WriteLine($"Скасований запис #{appointments[1].Id} оплачено: {appointments[1].IsPaid}");
+
+            Appointment[] patientAppointments = appointments
+                .Where(a => a.PatientId == 1)
+                .Cast<Appointment>()
+                .ToArray();
+
+            int cancelledCount = AppointmentManager.CancelAll(
+                patientAppointments,
+                "Масове скасування записів");
+
+            Console.WriteLine($"Скасовано записів пацієнта №1: {cancelledCount}");
 
             clinic.DisplaySchedule(new DateTime(2026, 05, 9));
             clinic.GenerateReport(5, 3);
@@ -225,14 +241,17 @@ namespace ClinicApp
 
             while (true)
             {
-                Console.WriteLine("\n=== ГОЛОВНЕ МЕНЮ ===");
-                Console.WriteLine("1. Пацієнти");
-                Console.WriteLine("2. Лікарі");
-                Console.WriteLine("3. Записи на прийом");
-                Console.WriteLine("4. Медична картка");
-                Console.WriteLine("5. Звіт");
-                Console.WriteLine("0. Вихід");
-                Console.Write("Ваш вибір: ");
+                Console.WriteLine("\n╔══════════════════════════════════════════════╗");
+                Console.WriteLine("║                 МЕДИЧНА КЛІНІКА              ║");
+                Console.WriteLine("╠══════════════════════════════════════════════╣");
+                Console.WriteLine("║  1. Пацієнти        — реєстрація, пошук       ║");
+                Console.WriteLine("║  2. Лікарі          — персонал, розклад       ║");
+                Console.WriteLine("║  3. Записи          — прийом, скасування      ║");
+                Console.WriteLine("║  4. Медична картка  — діагнози, рецепти       ║");
+                Console.WriteLine("║  5. Рахунки         — оплата, борги           ║");
+                Console.WriteLine("║  6. Звіт            — загальна статистика     ║");
+                Console.WriteLine("║  0. Вийти                                     ║");
+                Console.WriteLine("╚══════════════════════════════════════════════╝");
 
                 string choice = Console.ReadLine() ?? "";
 
@@ -242,6 +261,10 @@ namespace ClinicApp
                         MedicalRecordMenu(clinic);
                         break;
                     case "5":
+                        BillingMenu(clinic);
+                        break;
+
+                    case "6":
                         clinic.GenerateReport(
                             clinic.Patients.Count,
                             clinic.Doctors.GetAll().Length);
@@ -524,6 +547,93 @@ namespace ClinicApp
                         return;
                     default:
                         Console.WriteLine("Цей пункт поки не реалізовано.");
+                        break;
+                }                
+            }
+        }
+        static void BillingMenu(Clinic clinic)
+        {
+            while (true)
+            {
+                Console.WriteLine("\n— Рахунки —");
+                Console.WriteLine("1. Борги пацієнта");
+                Console.WriteLine("2. Всі неоплачені записи");
+                Console.WriteLine("3. Оплатити запис");
+                Console.WriteLine("4. Загальний борг клініки");
+                Console.WriteLine("0. Назад");
+                Console.Write("Ваш вибір: ");
+
+                string choice = Console.ReadLine() ?? "";
+
+                switch (choice)
+                {
+                    case "1":
+                    Console.Write("ID пацієнта: ");
+
+                    if (!int.TryParse(Console.ReadLine(), out int patientId))
+                    {
+                        Console.WriteLine("Некоректний ID.");
+                        break;
+                    }
+
+                    IPayable[] unpaid = clinic.Billing.GetUnpaidByPatient(patientId);
+
+                    if (unpaid.Length == 0)
+                    {
+                        Console.WriteLine("Немає неоплачених записів.");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Неоплачені записи пацієнта №{patientId}:");
+                        clinic.Billing.DisplayUnpaid(unpaid);
+                    }
+
+                    Console.WriteLine($"Борг: {clinic.Billing.GetPatientDebt(patientId):F2} грн");
+                    break;
+
+
+                    case "2":
+                    IPayable[] allUnpaid = clinic.Billing.GetAllUnpaid();
+
+                    if (allUnpaid.Length == 0)
+                    {
+                        Console.WriteLine("Немає неоплачених записів.");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Усі неоплачені записи:");
+                        clinic.Billing.DisplayUnpaid(allUnpaid);
+                    }
+                    break;
+
+                    case "3":
+                    Console.Write("ID запису для оплати: ");
+
+                    if (!int.TryParse(Console.ReadLine(), out int appointmentId))
+                    {
+                        Console.WriteLine("Некоректний ID.");
+                        break;
+                    }
+
+                    if (clinic.Billing.PayAppointment(appointmentId))
+                    {
+                        Console.WriteLine($"Запис [{appointmentId}] оплачено.");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Не вдалося оплатити: запис не знайдено, вже оплачено або скасовано.");
+                    }
+                    break;
+
+                    case "4":
+                    decimal totalDebt = clinic.Billing.GetTotalDebt();
+                    Console.WriteLine($"Загальний борг по клініці: {totalDebt:F2} грн");
+                    break;
+
+                    case "0":
+                        return;
+                    default:
+                        Console.WriteLine("Невірний пункт меню.");
                         break;
                 }
             }
