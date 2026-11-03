@@ -65,6 +65,13 @@ public class AppointmentManager
         return false;
     }
 
+    public Appointment[] GetAll()
+    {
+        Appointment[] result = new Appointment[_count];
+        Array.Copy(_appointments, result, _count);
+        return result;
+    }
+
     public Appointment[] GetByPetient(int patientId)
     {
         int number = 0;
