@@ -1,6 +1,8 @@
 using System;
 
-namespace ClinicApp;
+using ClinicApp.Utils;
+using ClinicApp.Enums;
+namespace ClinicApp.Models;
 
 public class Doctor
 {
@@ -8,23 +10,64 @@ public class Doctor
     
     public int Id { get; }
 
-    public string FirstName { get; set; }
-    public string LastName { get; set; }
+    private string _firstName = "";
+    public string FirstName
+    {
+        get => _firstName;
+        set
+        {
+            ClinicValidator.ValidateName(value, nameof(FirstName));
+
+            _firstName = value;
+        }
+    }
+    private string _lastName = "";
+    public string LastName
+    {
+        get => _lastName;
+        set
+        {
+            ClinicValidator.ValidateName(value, nameof(LastName));
+
+            _lastName = value;
+        }
+    }
     public Speciality Speciality { get; set; }
-    public string LicenseNumber { get; set; }
-    public string Phone { get; set; }
+    private string _licenseNumber = "";
+    public string LicenseNumber
+    {
+        get => _licenseNumber;
+        set
+        {
+            if (string.IsNullOrWhiteSpace(value))
+                throw new ArgumentException("Номер ліцензії не може бути порожнім.", nameof(LicenseNumber));
+
+            _licenseNumber = value;
+        }
+    }
+    private string _phone = "";
+    public string Phone
+    {
+        get => _phone;
+        set
+        {
+            ClinicValidator.ValidatePhone(value);
+
+            _phone = value;
+        }
+    }
     public WorkSchedule Schedule { get; set; }
 
 
     public Doctor()
     {
-        Id = _nextId++;
         FirstName = "Невідомий";
         LastName = "Лікар";
-        Speciality = Speciality = Speciality.Unknown;;
+        Speciality = Speciality.Unknown;;
         LicenseNumber = "Невідомо";
         Phone = "0000000000";
         Schedule = new WorkSchedule(8, 17);
+        Id = _nextId++;
     }
 
 

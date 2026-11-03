@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
+using ClinicApp.Managers;
+using ClinicApp.Models;
+using ClinicApp.Enums;
+
 namespace ClinicApp
 {
     internal class Program
@@ -8,7 +12,14 @@ namespace ClinicApp
         static void Main(string[] args)
         {
             Clinic clinic = new Clinic("Медична Клініка");
-
+            try
+            {
+                Patient invalidPatient = new Patient("", "Тест");
+            }
+            catch (ArgumentException ex)
+            {
+                Console.WriteLine($"Помилка створення пацієнта: {ex.Message}");
+            }
             Patient p1 = new Patient(
                 "Іван", "Петренко",
                 new DateTime(1985, 5, 10),
