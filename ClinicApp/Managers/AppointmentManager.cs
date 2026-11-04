@@ -27,8 +27,6 @@ public class AppointmentManager
             return false;
         }
 
-        if(_count >= MaxAppointments) return false;
-
         Appointment appointment = new RegularAppointment(
         patientId,
         doctorId,
@@ -36,10 +34,7 @@ public class AppointmentManager
         durationMinutes
         );
 
-        _appointments[_count] = appointment;
-        _count++;
-
-        return true;
+        return AddAppointment(appointment);
     }
 
     public bool BookUrgent(
@@ -138,6 +133,60 @@ public class AppointmentManager
         return result;
     }
 
+    public Appointment[] GetUrgent()
+    {
+        int count = 0;
+
+        foreach (Appointment appointment in _appointments)
+        {
+            if (appointment is UrgentAppointment)
+            {
+                count++;
+            }
+        }
+
+        Appointment[] result = new Appointment[count];
+        int index = 0;
+
+        for (int i = 0; i < _count; i++)
+        {
+            if (_appointments[i] is UrgentAppointment)
+            {
+                result[index] = _appointments[i];
+                index++;
+            }
+        }
+
+        return result;
+    }
+
+    public Appointment[] GetSpecialist()
+{
+    int count = 0;
+
+    foreach (Appointment appointment in _appointments)
+    {
+        if (appointment is SpecialistAppointment)
+        {
+            count++;
+        }
+    }
+
+    Appointment[] result = new Appointment[count];
+    int index = 0;
+
+    for (int i = 0; i < _count; i++)
+    {
+        if (_appointments[i] is SpecialistAppointment)
+        {
+            result[index] = _appointments[i];
+            index++;
+        }
+    }
+
+    return result;
+}
+
     public Appointment[] GetByPetient(int patientId)
     {
         int number = 0;
@@ -162,6 +211,35 @@ public class AppointmentManager
         }
         return results;
     }
+
+    public Appointment[] GetRegular()
+    {
+        int count = 0;
+
+        foreach (Appointment appointment in _appointments)
+        {
+            if (appointment is RegularAppointment)
+            {
+                count++;
+            }
+        }
+
+        Appointment[] result = new Appointment[count];
+        int index = 0;
+
+        for (int i = 0; i < _count; i++)
+        {
+            if (_appointments[i] is RegularAppointment)
+            {
+                result[index] = _appointments[i];
+                index++;
+            }
+        }
+
+        return result;
+    }
+
+
 
     public Appointment[] GetByDoctor(int doctorId)
     {
@@ -267,11 +345,10 @@ public class AppointmentManager
         {
                 nameDoctor = $"Лікаря #{appointment.DoctorId}";
         }
-        Console.WriteLine($"[{appointment.Id}] {namePatient} => {nameDoctor} | " +
-        $"{appointment.ScheduledAt:dd.MM.yyyy HH:mm}-" +
-        $"{appointment.ScheduledAt.AddMinutes(appointment.DurationMinutes):HH:mm} | " +
-        $"{appointment.Status}"
-        );
+        Console.WriteLine($"[{appointment.Id}] {appointment.GetDescription()} | " +
+        $"{namePatient} → {nameDoctor} | " +
+        $"{appointment.ScheduledAt:dd.MM.yyyy HH:mm}-{appointment.ScheduledAt.AddMinutes(appointment.DurationMinutes):HH:mm} | " +
+        $"{appointment.Status} | {appointment.GetCost():F2} грн");
     }
     
     public void DisplayList(Appointment[] appointments)
