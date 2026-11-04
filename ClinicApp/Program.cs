@@ -257,6 +257,9 @@ namespace ClinicApp
 
                 switch (choice)
                 {
+                    case "3":
+                    AppointmentMenu(clinic);
+                    break;
                     case "4":
                         MedicalRecordMenu(clinic);
                         break;
@@ -268,6 +271,39 @@ namespace ClinicApp
                         clinic.GenerateReport(
                             clinic.Patients.Count,
                             clinic.Doctors.GetAll().Length);
+                        break;
+                    case "0":
+                        return;
+                    default:
+                        Console.WriteLine("Невірний пункт меню.");
+                        break;
+                }
+            }
+        }
+
+        static void AppointmentMenu(Clinic clinic)
+        {
+            while (true)
+            {
+                Console.WriteLine("\n=== ЗАПИСИ НА ПРИЙОМ ===");
+                Console.WriteLine("1. Термінові прийоми");
+                Console.WriteLine("2. Прийоми спеціаліста");
+                Console.WriteLine("3. Звичайні прийоми");
+                Console.WriteLine("0. Назад");
+                Console.Write("Ваш вибір: ");
+
+                string choice = Console.ReadLine() ?? "";
+
+                switch (choice)
+                {
+                    case "1":
+                        clinic.Appointments.DisplayList(clinic.Appointments.GetUrgent());
+                        break;
+                    case "2":
+                        clinic.Appointments.DisplayList(clinic.Appointments.GetSpecialist());
+                        break;
+                    case "3":
+                        clinic.Appointments.DisplayList(clinic.Appointments.GetRegular());
                         break;
                     case "0":
                         return;

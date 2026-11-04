@@ -34,6 +34,11 @@ public class AppointmentManager
         durationMinutes
         );
 
+        if (patient.IsVip)
+        {
+            appointment.DiscountMultiplier = 0.8m;
+        }
+
         return AddAppointment(appointment);
     }
 
@@ -60,6 +65,11 @@ public class AppointmentManager
             durationMinutes
         );
 
+        if (patient.IsVip)
+        {
+            appointment.DiscountMultiplier = 0.8m;
+        }
+
         return AddAppointment(appointment);
     }
 
@@ -85,6 +95,11 @@ public class AppointmentManager
             topic,
             durationMinutes
         );
+
+        if (patient.IsVip)
+        {
+            appointment.DiscountMultiplier = 0.8m;
+        }
 
         return AddAppointment(appointment);
     }
