@@ -9,6 +9,8 @@ public class Appointment : IPayable, ICancellable
 {
     private bool _isPaid = false;
     public bool IsPaid => _isPaid;
+    //множник знижки зберігається у Appointment тому вона працює для всіх
+    public decimal DiscountMultiplier { get; set; } = 1m;
     public void MarkPaid()
     {
         if(!IsCancelled)
@@ -18,7 +20,7 @@ public class Appointment : IPayable, ICancellable
     }
     public virtual decimal GetCost()
     {
-        return DurationMinutes * 10m;
+        return DurationMinutes * 10m * DiscountMultiplier;
     }
 
     public virtual string GetDescription()

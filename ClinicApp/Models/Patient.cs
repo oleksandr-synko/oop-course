@@ -97,6 +97,8 @@ public class Patient
         get { return Age >= 18; }
     }
 
+    public bool IsVip { get; set; } = false;
+
     public Patient()
         : this("Невідомий", "Пацієнт")
     {
