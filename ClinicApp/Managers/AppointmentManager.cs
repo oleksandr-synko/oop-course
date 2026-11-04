@@ -29,12 +29,77 @@ public class AppointmentManager
 
         if(_count >= MaxAppointments) return false;
 
-        Appointment appointment = new Appointment(
+        Appointment appointment = new RegularAppointment(
         patientId,
         doctorId,
         scheduledAt,
         durationMinutes
         );
+
+        _appointments[_count] = appointment;
+        _count++;
+
+        return true;
+    }
+
+    public bool BookUrgent(
+    int patientId,
+    int doctorId,
+    DateTime scheduledAt,
+    string urgencyNote = "",
+    int durationMinutes = 30)
+    {
+        Patient? patient = _patients.FindById(patientId);
+        Doctor? doctor = _doctors.FindById(doctorId);
+
+        if (patient == null || doctor == null)
+        {
+            return false;
+        }
+
+        Appointment appointment = new UrgentAppointment(
+            patientId,
+            doctorId,
+            scheduledAt,
+            urgencyNote,
+            durationMinutes
+        );
+
+        return AddAppointment(appointment);
+    }
+
+    public bool BookSpecialist(
+    int patientId,
+    int doctorId,
+    DateTime scheduledAt,
+    string topic = "",
+    int durationMinutes = 45)
+    {
+        Patient? patient = _patients.FindById(patientId);
+        Doctor? doctor = _doctors.FindById(doctorId);
+
+        if (patient == null || doctor == null)
+        {
+            return false;
+        }
+
+        Appointment appointment = new SpecialistAppointment(
+            patientId,
+            doctorId,
+            scheduledAt,
+            topic,
+            durationMinutes
+        );
+
+        return AddAppointment(appointment);
+    }
+
+    private bool AddAppointment(Appointment appointment)
+    {
+        if (_count >= MaxAppointments)
+        {
+            return false;
+        }
 
         _appointments[_count] = appointment;
         _count++;

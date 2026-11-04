@@ -244,13 +244,13 @@ namespace ClinicApp
                 Console.WriteLine("\n╔══════════════════════════════════════════════╗");
                 Console.WriteLine("║                 МЕДИЧНА КЛІНІКА              ║");
                 Console.WriteLine("╠══════════════════════════════════════════════╣");
-                Console.WriteLine("║  1. Пацієнти        — реєстрація, пошук       ║");
-                Console.WriteLine("║  2. Лікарі          — персонал, розклад       ║");
-                Console.WriteLine("║  3. Записи          — прийом, скасування      ║");
-                Console.WriteLine("║  4. Медична картка  — діагнози, рецепти       ║");
-                Console.WriteLine("║  5. Рахунки         — оплата, борги           ║");
-                Console.WriteLine("║  6. Звіт            — загальна статистика     ║");
-                Console.WriteLine("║  0. Вийти                                     ║");
+                Console.WriteLine("║  1. Пацієнти        — реєстрація, пошук      ║");
+                Console.WriteLine("║  2. Лікарі          — персонал, розклад      ║");
+                Console.WriteLine("║  3. Записи          — прийом, скасування     ║");
+                Console.WriteLine("║  4. Медична картка  — діагнози, рецепти      ║");
+                Console.WriteLine("║  5. Рахунки         — оплата, борги          ║");
+                Console.WriteLine("║  6. Звіт            — загальна статистика    ║");
+                Console.WriteLine("║  0. Вийти                                    ║");
                 Console.WriteLine("╚══════════════════════════════════════════════╝");
 
                 string choice = Console.ReadLine() ?? "";
@@ -277,6 +277,7 @@ namespace ClinicApp
                 }
             }
         }
+        
         static void MedicalRecordMenu(Clinic clinic)
         {
             while (true)
