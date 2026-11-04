@@ -16,10 +16,21 @@ public class Appointment : IPayable, ICancellable
             _isPaid = true;
         }
     }
-    public decimal GetCost()
+    public virtual decimal GetCost()
     {
         return DurationMinutes * 10m;
     }
+
+    public virtual string GetDescription()
+    {
+        return "Прийом";
+    }
+
+    public int GetPriority()
+    {
+        return 3;
+    }
+
     private static int _nextId = 1;
 
     public int Id { get; }
@@ -98,15 +109,18 @@ public class Appointment : IPayable, ICancellable
 
     public override string ToString()
     {
-       DateTime endTime = ScheduledAt.AddMinutes(DurationMinutes);
-       
-       string result = $"[{Id}] Пацієнт #{PatientId} → Лікар #{DoctorId} | " +
-                    $"{ScheduledAt:dd.MM.yyyy HH:mm}–{endTime:HH:mm} | {Status}";
+        DateTime endTime = ScheduledAt.AddMinutes(DurationMinutes);
+
+        string result = $"[{Id}] {GetDescription()} | " +
+                        $"Пацієнт #{PatientId} → Лікар #{DoctorId} | " +
+                        $"{ScheduledAt:dd.MM.yyyy HH:mm}–{endTime:HH:mm} | {Status}";
 
         if (Notes != "")
         {
             result += $" | {Notes}";
         }
+
+        result += $" | {GetCost():F2} грн";
 
         return result;
     }
