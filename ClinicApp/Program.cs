@@ -249,7 +249,8 @@ namespace ClinicApp
                 Console.WriteLine("║  3. Записи          — прийом, скасування     ║");
                 Console.WriteLine("║  4. Медична картка  — діагнози, рецепти      ║");
                 Console.WriteLine("║  5. Рахунки         — оплата, борги          ║");
-                Console.WriteLine("║  6. Звіт            — загальна статистика    ║");
+                Console.WriteLine("║  6. Черга           — очікування, прийом     ║");
+                Console.WriteLine("║  7. Звіт            — загальна статистика    ║");
                 Console.WriteLine("║  0. Вийти                                    ║");
                 Console.WriteLine("╚══════════════════════════════════════════════╝");
 
@@ -266,8 +267,10 @@ namespace ClinicApp
                     case "5":
                         BillingMenu(clinic);
                         break;
-
                     case "6":
+                        WaitingRoomMenu(clinic);
+                        break;
+                    case "7":
                         clinic.GenerateReport(
                             clinic.Patients.Count,
                             clinic.Doctors.GetAll().Length);
@@ -588,6 +591,73 @@ namespace ClinicApp
                 }                
             }
         }
+
+        static void WaitingRoomMenu(Clinic clinic)
+        {
+            while (true)
+            {
+                Console.WriteLine("\n=== ЧЕРГА ОЧІКУВАННЯ ===");
+                Console.WriteLine("1. Додати пацієнта в чергу");
+                Console.WriteLine("2. Прийняти наступного пацієнта");
+                Console.WriteLine("3. Переглянути наступного пацієнта");
+                Console.WriteLine("4. Показати всю чергу");
+                Console.WriteLine("0. Назад");
+                Console.Write("Ваш вибір: ");
+
+                string choice = Console.ReadLine() ?? "";
+
+                switch (choice)
+                {
+                    case "1":
+                        clinic.WaitingRoom.Enqueue(clinic.Patients[0]);
+                        Console.WriteLine("Пацієнта додано в чергу.");
+                        break;
+                    case "2":
+                        if (clinic.WaitingRoom.IsEmpty)
+                        {
+                            Console.WriteLine("Черга порожня!");
+                        }
+                        else
+                        {
+                            Patient patient = clinic.WaitingRoom.Dequeue();
+                            Console.WriteLine($"Пацієнта {patient.FullName} прийнято.");
+                        }
+                        break;
+                    case "3":
+                        if (clinic.WaitingRoom.IsEmpty)
+                        {
+                            Console.WriteLine("Черга порожня!");
+                        }
+                        else
+                        {
+                            Patient patient = clinic.WaitingRoom.Peek();
+                            Console.WriteLine($"Наступний пацієнт: {patient.FullName}");
+                        }
+                        break;
+                    case "4":
+                        if (clinic.WaitingRoom.IsEmpty)
+                        {
+                            Console.WriteLine("Черга порожня!");
+                        }
+                        else
+                        {
+                            Console.WriteLine("\nПацієнти в черзі:");
+
+                            foreach (Patient patient in clinic.WaitingRoom.ToArray())
+                            {
+                                Console.WriteLine(patient.FullName);
+                            }
+                        }
+                        break;
+                    case "0":
+                        return;
+                    default:
+                        Console.WriteLine("Невірний вибір. Спробуйте ще раз.");
+                        break;
+                }
+            }
+        }
+
         static void BillingMenu(Clinic clinic)
         {
             while (true)
