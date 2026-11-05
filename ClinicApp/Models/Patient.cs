@@ -1,9 +1,10 @@
 using System;
 
+using ClinicApp.Interfaces;
 using ClinicApp.Utils;
 using ClinicApp.Enums;
 namespace ClinicApp.Models;
-public class Patient
+public class Patient : IIdentifiable
 {
     private static int _nextId = 1;
 

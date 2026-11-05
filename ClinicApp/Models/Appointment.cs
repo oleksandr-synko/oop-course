@@ -5,7 +5,7 @@ using ClinicApp.Utils;
 using ClinicApp.Enums;
 namespace ClinicApp.Models;
 
-public class Appointment : IPayable, ICancellable
+public class Appointment : IPayable, ICancellable, IIdentifiable
 {
     private bool _isPaid = false;
     public bool IsPaid => _isPaid;
