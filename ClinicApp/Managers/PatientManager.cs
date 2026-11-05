@@ -1,24 +1,23 @@
 using System;
+using System.Linq;
 
 using ClinicApp.Models;
 using ClinicApp.Enums;
 namespace ClinicApp.Managers;
 public class PatientManager
 {
-    private const int MaxPatients = 100;
-    private Patient[] _patients = new Patient[MaxPatients];
-    private int _count;
-
+    private List<Patient> _patients = new List<Patient>();
+    
     public int Count
     {
-        get {return _count;}
+        get { return _patients.Count; }
     }
 
     public Patient this[int index]
     {
         get
         {
-            if (index < 0 || index >= _count)
+            if (index < 0 || index >= _patients.Count)
                 throw new IndexOutOfRangeException("Пацієнта з таким індексом не існує!");
 
             return _patients[index];
@@ -27,19 +26,12 @@ public class PatientManager
 
     public void Add(Patient patient)
     {
-        if(_count >= MaxPatients)
-        {
-            Console.WriteLine("Увага! Клініка заповнена пацієнтами!");
-            return;
-        }
-        _patients[_count] = patient;
-        _count++;
-
+        _patients.Add(patient);
     }
 
     public Patient? FindById(int id)
     {
-        for(int i = 0; i < _count; i++)
+        for (int i = 0; i < _patients.Count; i++)
         {
             if(_patients[i].Id == id)
             {
@@ -58,94 +50,45 @@ public class PatientManager
 
     public Patient[] FindByBloodType(BloodType bloodType)
     {
-        int number = 0;
-
-        for (int i = 0; i < _count; i++)
-        {
-            if (_patients[i].BloodType == bloodType)
-            {
-                number++;
-            }
-        }
-
-        Patient[] results = new Patient[number];
-        int ind = 0;
-
-        for (int i = 0; i < _count; i++)
-        {
-            if (_patients[i].BloodType == bloodType)
-            {
-                results[ind] = _patients[i];
-                ind++;
-            }
-        }
-
-        return results;
-}
+        return _patients
+            .Where(p => p.BloodType == bloodType)
+            .ToArray();
+    }
 
     public Patient[] FindByName(string name)
-        {
-            int number = 0;
-            for(int i = 0; i <_count; i++)
-            {
-                if(_patients[i].FirstName.Contains(name, StringComparison.OrdinalIgnoreCase) ||
-                _patients[i].LastName.Contains(name, StringComparison.OrdinalIgnoreCase))
-                {
-                    number++;
-                }
-            }
-            Patient[] results = new Patient[number];
-            int ind = 0;
-
-            for(int i = 0; i < _count; i++)
-            {
-                if(_patients[i].FirstName.Contains(name, StringComparison.OrdinalIgnoreCase) ||
-                _patients[i].LastName.Contains(name, StringComparison.OrdinalIgnoreCase))
-                {
-                    results[ind] = _patients[i];
-                    ind++;
-                }
-            }
-            return results;
-        }
+    {
+        return _patients
+            .Where(p =>
+                p.FirstName.Contains(name, StringComparison.OrdinalIgnoreCase) ||
+                p.LastName.Contains(name, StringComparison.OrdinalIgnoreCase))
+            .ToArray();
+    }
 
 
         public bool Remove(int id)
-    {
-        int ind = -1;
-        for(int i = 0; i < _count; i++)
         {
-            if(_patients[i].Id == id)
-            {
-                ind = i;
-                break;
-            }
-        }
-        if(ind == -1)
-        {
-            return false;
-        }
-        for(int i = ind; i < _count - 1; i++)
-        {
-            _patients[i] = _patients[i + 1];
-        }
-        _patients[_count - 1] = null!;
-        _count--;
+            int index = _patients.FindIndex(p => p.Id == id);
 
-        return true;
-    }
+            if (index == -1)
+            {
+                return false;
+            }
+
+            _patients.RemoveAt(index);
+            return true;
+        }
 
     public void DisplayAll()
     {
-        if(_count == 0)
+        if (_patients.Count == 0)
         {
             Console.WriteLine("Пацієнтів у клініці немає!");
             return;
         }
         else
         {
-            Console.WriteLine($"=== Пацієнти ({_count}/{MaxPatients})===");
-            for(int i = 0; i < _count; i++)
+            Console.WriteLine($"=== Пацієнти ({_patients.Count})===");
+            for(int i = 0; i < _patients.Count; i++)
             {
                 Console.WriteLine(_patients[i]);
             }
@@ -154,23 +97,23 @@ public class PatientManager
 
     public void DisplayStatus()
     {
-        if(_count == 0)
+        if (_patients.Count == 0)
         {
             Console.WriteLine("Пацієнтів у клініці немає!");
             return;
         }
         int sumAge = 0;
-        for(int i = 0; i <_count; i++)
+        for(int i = 0; i < _patients.Count; i++)
         {
             sumAge += _patients[i].Age;
         }
-        double meanAge = sumAge / _count;
+        double meanAge = sumAge / _patients.Count;
 
         int youngIndex = 0;
         int oldIndex = 0;
         int adults = 0;
         
-        for(int i = 0; i < _count; i++)
+        for(int i = 0; i < _patients.Count; i++)
         {
             if(_patients[i].Age < _patients[youngIndex].Age)
             {
@@ -185,11 +128,11 @@ public class PatientManager
                 adults++;
             }
         }
-        Console.WriteLine($"Всього: {_count}");
+        Console.WriteLine($"Всього: {_patients.Count}");
         Console.WriteLine($"Середній вік: {meanAge:F1}р.");
         Console.WriteLine($"Наймолодший: {_patients[youngIndex].FullName} ({_patients[youngIndex].Age}р.)");
         Console.WriteLine($"Найстарший: {_patients[oldIndex].FullName} ({_patients[oldIndex].Age}р.)");
-        Console.WriteLine($"Дорослих: {adults} з {_count}");
+        Console.WriteLine($"Дорослих: {adults} з {_patients.Count}");
         Console.WriteLine("==============================");
     }
 }
