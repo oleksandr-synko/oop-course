@@ -609,29 +609,45 @@ namespace ClinicApp
                 switch (choice)
                 {
                     case "1":
-                        clinic.WaitingRoom.Enqueue(clinic.Patients[0]);
-                        Console.WriteLine("Пацієнта додано в чергу.");
+                        Console.Write("Введіть ID пацієнта: ");
+
+                        if (!int.TryParse(Console.ReadLine(), out int patientId))
+                        {
+                            Console.WriteLine("Некоректний ID.");
+                            break;
+                        }
+
+                        Patient? patient = clinic.Patients.FindById(patientId);
+
+                        if (patient == null)
+                        {
+                            Console.WriteLine("Пацієнта з таким ID не знайдено.");
+                            break;
+                        }
+
+                        clinic.WaitingRoom.Enqueue(patient);
+                        Console.WriteLine($"Пацієнта {patient.FullName} додано в чергу.");
                         break;
                     case "2":
-                        if (clinic.WaitingRoom.IsEmpty)
+                        try
                         {
-                            Console.WriteLine("Черга порожня!");
+                            Patient removedPatient = clinic.WaitingRoom.Dequeue();
+                            Console.WriteLine($"Прийнято пацієнта: {removedPatient.FullName}");
                         }
-                        else
+                        catch (InvalidOperationException ex)
                         {
-                            Patient patient = clinic.WaitingRoom.Dequeue();
-                            Console.WriteLine($"Пацієнта {patient.FullName} прийнято.");
+                            Console.WriteLine(ex.Message);
                         }
                         break;
                     case "3":
-                        if (clinic.WaitingRoom.IsEmpty)
+                        try
                         {
-                            Console.WriteLine("Черга порожня!");
+                            Patient firstPatient = clinic.WaitingRoom.Peek();
+                            Console.WriteLine($"Наступний пацієнт: {firstPatient.FullName}");
                         }
-                        else
+                        catch (InvalidOperationException ex)
                         {
-                            Patient patient = clinic.WaitingRoom.Peek();
-                            Console.WriteLine($"Наступний пацієнт: {patient.FullName}");
+                            Console.WriteLine(ex.Message);
                         }
                         break;
                     case "4":
@@ -643,10 +659,10 @@ namespace ClinicApp
                         {
                             Console.WriteLine("\nПацієнти в черзі:");
 
-                            foreach (Patient patient in clinic.WaitingRoom.ToArray())
-                            {
-                                Console.WriteLine(patient.FullName);
-                            }
+                            foreach (Patient queuedPatient in clinic.WaitingRoom.ToArray())
+                                {
+                                    Console.WriteLine(queuedPatient.FullName);
+                                }
                         }
                         break;
                     case "0":
