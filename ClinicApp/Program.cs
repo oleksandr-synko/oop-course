@@ -20,6 +20,7 @@ namespace ClinicApp
             Thread.CurrentThread.CurrentUICulture = CultureInfo.InvariantCulture;
 
             Clinic clinic = new Clinic("Медична Клініка");
+            clinic.Logger.LogInfo("Програму запущено");
             try
             {
                 Patient invalidPatient = new Patient("", "Тест");
@@ -51,6 +52,7 @@ namespace ClinicApp
             clinic.Patients.Add(p3);
             clinic.Patients.Add(p4);
             clinic.Patients.Add(p5);
+            clinic.Logger.LogInfo("Початкових пацієнтів додано: 5");
 
             Doctor d1 = new Doctor(
                 "Олег", "Сидоренко",
@@ -244,19 +246,20 @@ namespace ClinicApp
             while (true)
             {
                 Console.WriteLine("\n╔══════════════════════════════════════════════╗");
-                Console.WriteLine("║                 МЕДИЧНА КЛІНІКА              ║");
-                Console.WriteLine("╠══════════════════════════════════════════════╣");
-                Console.WriteLine("║  1. Пацієнти        — реєстрація, пошук      ║");
-                Console.WriteLine("║  2. Лікарі          — персонал, розклад      ║");
-                Console.WriteLine("║  3. Записи          — прийом, скасування     ║");
-                Console.WriteLine("║  4. Медична картка  — діагнози, рецепти      ║");
-                Console.WriteLine("║  5. Рахунки         — оплата, борги          ║");
-                Console.WriteLine("║  6. Черга           — очікування, прийом     ║");
-                Console.WriteLine("║  7. Звіт            — загальна статистика    ║");
-                Console.WriteLine("║  8. Аналітика       — статистика             ║");
-                Console.WriteLine("║  9. Плани лікування — рефлексія, атрибути    ║");
-                Console.WriteLine("║  0. Вийти                                    ║");
-                Console.WriteLine("╚══════════════════════════════════════════════╝");
+                Console.WriteLine("║                 МЕДИЧНА КЛІНІКА               ║");
+                Console.WriteLine("╠═══════════════════════════════════════════════╣");
+                Console.WriteLine("║  1. Пацієнти        — реєстрація, пошук       ║");
+                Console.WriteLine("║  2. Лікарі          — персонал, розклад       ║");
+                Console.WriteLine("║  3. Записи          — прийом, скасування      ║");
+                Console.WriteLine("║  4. Медична картка  — діагнози, рецепти       ║");
+                Console.WriteLine("║  5. Рахунки         — оплата, борги           ║");
+                Console.WriteLine("║  6. Черга           — очікування, прийом      ║");
+                Console.WriteLine("║  7. Звіт            — загальна статистика     ║");
+                Console.WriteLine("║  8. Аналітика       — статистика              ║");
+                Console.WriteLine("║  9. Плани лікування — рефлексія, атрибути     ║");
+                Console.WriteLine("║ 10. Файли           — перегляд, очищення логу ║");
+                Console.WriteLine("║  0. Вийти                                     ║");
+                Console.WriteLine("╚═══════════════════════════════════════════════╝");
 
                 string choice = Console.ReadLine() ?? "";
 
@@ -286,6 +289,7 @@ namespace ClinicApp
                         TreatmentPlanMenu(clinic);
                         break;
                     case "0":
+                        clinic.Logger.LogInfo("Програму завершено");
                         return;
                     default:
                         Console.WriteLine("Невірний пункт меню.");
@@ -317,6 +321,9 @@ namespace ClinicApp
                         break;
                     case "3":
                         clinic.Appointments.DisplayList(clinic.Appointments.GetRegular());
+                        break;
+                    case "10":
+                        FilesMenu(clinic);
                         break;
                     case "0":
                         return;
@@ -440,10 +447,13 @@ namespace ClinicApp
                         ));
 
                         Console.WriteLine("Діагноз успішно додано.");
+                        clinic.Logger.LogInfo($"Додано діагноз пацієнту ID: {diagnosisPatientId}");
+
                     }
                     catch (ArgumentException ex)
                     {
                         Console.WriteLine($"Помилка: {ex.Message}");
+                        clinic.Logger.LogError($"Помилка додавання діагнозу: {ex.Message}");
                     }
                     break;
 
@@ -497,10 +507,13 @@ namespace ClinicApp
                         ));
 
                         Console.WriteLine("Результат аналізу успішно додано.");
+                        clinic.Logger.LogInfo($"Додано результат аналізу пацієнту ID: {labPatientId}");
+                        
                     }
                     catch (ArgumentException ex)
                     {
                         Console.WriteLine($"Помилка: {ex.Message}");
+                        clinic.Logger.LogError($"Помилка додавання результату аналізу: {ex.Message}");
                     }
                     break;
                     
@@ -558,10 +571,13 @@ namespace ClinicApp
                         ));
 
                         Console.WriteLine("Рецепт успішно додано.");
+                        clinic.Logger.LogInfo($"Додано рецепт пацієнту ID: {prescriptionPatientId}");
+
                     }
                     catch (ArgumentException ex)
                     {
                         Console.WriteLine($"Помилка: {ex.Message}");
+                        clinic.Logger.LogError($"Помилка додавання рецепта: {ex.Message}");
                     }
                     break;
 
@@ -751,10 +767,12 @@ namespace ClinicApp
                     if (clinic.Billing.PayAppointment(appointmentId))
                     {
                         Console.WriteLine($"Запис [{appointmentId}] оплачено.");
+                        clinic.Logger.LogInfo($"Оплачено запис ID: {appointmentId}");
                     }
                     else
                     {
                         Console.WriteLine("Не вдалося оплатити: запис не знайдено, вже оплачено або скасовано.");
+                        clinic.Logger.LogWarning($"Не вдалося оплатити запис ID: {appointmentId}");
                     }
                     break;
 
@@ -1044,6 +1062,52 @@ namespace ClinicApp
                             case "0":
                                 return;
 
+                            default:
+                                Console.WriteLine("Невірний пункт меню.");
+                                break;
+                        }
+                    }
+                }
+
+                static void FilesMenu(Clinic clinic)
+                {
+                    while (true)
+                    {
+                        Console.WriteLine("\n=== РОБОТА З ФАЙЛАМИ ===");
+                        Console.WriteLine("1. Переглянути журнал");
+                        Console.WriteLine("2. Очистити журнал");
+                        Console.WriteLine("0. Назад");
+                        Console.Write("Ваш вибір: ");
+
+                        string choice = Console.ReadLine() ?? "";
+
+                        switch (choice)
+                        {
+                            case "1":
+                                Console.Write("Скільки останніх рядків показати? ");
+
+                                if (int.TryParse(Console.ReadLine(), out int count) && count > 0)
+                                {
+                                    string[] lines = clinic.Logger.ReadLastLines(count);
+
+                                    foreach (string line in lines)
+                                    {
+                                        Console.WriteLine(line);
+                                    }
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Введіть коректне додатне число.");
+                                }
+                                break;
+
+                            case "2":
+                                clinic.Logger.Clear();
+                                Console.WriteLine("Журнал успішно очищено.");
+                                break;
+                                
+                            case "0":
+                                return;
                             default:
                                 Console.WriteLine("Невірний пункт меню.");
                                 break;

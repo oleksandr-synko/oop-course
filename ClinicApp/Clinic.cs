@@ -2,6 +2,8 @@ using System;
 
 using ClinicApp.Managers;
 using ClinicApp.Models;
+using ClinicApp.Utils;
+
 namespace ClinicApp;
 
 public class Clinic
@@ -16,6 +18,7 @@ public class Clinic
     public BillingManager Billing { get; }
     public AnalyticsManager Analytics { get; }
     public WaitingQueue<Patient> WaitingRoom { get; }
+    public ClinicLogger Logger { get; }
 
     public Clinic(string name)
     {
@@ -28,6 +31,7 @@ public class Clinic
         Billing = new BillingManager(Appointments);
         Analytics = new AnalyticsManager(Appointments, Doctors, Patients);
         WaitingRoom = new WaitingQueue<Patient>();
+        Logger = new ClinicLogger();
     }
 
     public void DisplaySchedule(DateTime date)
