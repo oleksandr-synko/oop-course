@@ -1076,6 +1076,7 @@ namespace ClinicApp
                         Console.WriteLine("\n=== РОБОТА З ФАЙЛАМИ ===");
                         Console.WriteLine("1. Переглянути журнал");
                         Console.WriteLine("2. Очистити журнал");
+                        Console.WriteLine("3. Експорт звітів");
                         Console.WriteLine("0. Назад");
                         Console.Write("Ваш вибір: ");
 
@@ -1105,7 +1106,18 @@ namespace ClinicApp
                                 clinic.Logger.Clear();
                                 Console.WriteLine("Журнал успішно очищено.");
                                 break;
-                                
+                            
+                            case "3":
+                                ClinicExporter exporter = new ClinicExporter(clinic);
+                                string[] paths = exporter.ExportAll();  
+                                Console.WriteLine("\nЗвіти успішно створено:");
+
+                                foreach (string path in paths)
+                                {
+                                    Console.WriteLine(path);
+                                }
+                                break;
+
                             case "0":
                                 return;
                             default:
