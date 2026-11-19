@@ -1077,6 +1077,7 @@ namespace ClinicApp
                         Console.WriteLine("1. Переглянути журнал");
                         Console.WriteLine("2. Очистити журнал");
                         Console.WriteLine("3. Експорт звітів");
+                        Console.WriteLine("4. Імпорт пацієнтів із CSV");
                         Console.WriteLine("0. Назад");
                         Console.Write("Ваш вибір: ");
 
@@ -1116,6 +1117,15 @@ namespace ClinicApp
                                 {
                                     Console.WriteLine(path);
                                 }
+                                break;
+                            case "4":
+                                Console.Write("Введіть шлях до CSV-файлу: ");
+                                string filePath = Console.ReadLine() ?? "";
+
+                                CsvImporter importer = new CsvImporter();
+                                ImportResult result = importer.ImportPatients(clinic, filePath);
+
+                                result.Print();
                                 break;
 
                             case "0":
