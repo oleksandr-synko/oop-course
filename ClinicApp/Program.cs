@@ -9,6 +9,7 @@ using ClinicApp.Managers;
 using ClinicApp.Models;
 using ClinicApp.Enums;
 using ClinicApp.Utils;
+using ClinicApp.Events;
 
 namespace ClinicApp
 {
@@ -20,6 +21,7 @@ namespace ClinicApp
             Thread.CurrentThread.CurrentUICulture = CultureInfo.InvariantCulture;
 
             Clinic clinic = new Clinic("Медична Клініка");
+            clinic.Appointments.AppointmentBooked += OnAppointmentBooked;
             clinic.Logger.LogInfo("Програму запущено");
             SessionManager sessionManager = clinic.Session;
 
@@ -66,18 +68,6 @@ namespace ClinicApp
                     int loadedCount = sessionManager.Load(clinic);
                     Console.WriteLine($"Завантажено {loadedCount} пацієнтів.");
                 }
-            }
-
-                if (sessionManager.Exists())
-                {
-                    Console.Write("Знайдено збережену сесію. Завантажити? (y/n): ");
-                    string answer = (Console.ReadLine() ?? "").Trim().ToLower();
-
-                    if (answer == "y")
-                    {
-                        int loadedCount = sessionManager.Load(clinic);
-                        Console.WriteLine($"Завантажено {loadedCount} пацієнтів.");
-                    }
             }
 
             Doctor d1 = new Doctor(
@@ -341,6 +331,15 @@ namespace ClinicApp
                         Console.WriteLine("Невірний пункт меню.");
                         break;
                 }
+            }
+            static void OnAppointmentBooked(object? sender, AppointmentEventArgs e)
+            {
+                Console.WriteLine(
+                    $"Створено запис #{e.AppointmentId} | " +
+                    $"Пацієнт: #{e.PatientId} | " +
+                    $"Лікар: #{e.DoctorId} | " +
+                    $"Дата: {e.ScheduledAt}"
+                );
             }
         }
 
