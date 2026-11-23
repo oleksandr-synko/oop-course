@@ -21,6 +21,8 @@ namespace ClinicApp
 
             Clinic clinic = new Clinic("Медична Клініка");
             clinic.Logger.LogInfo("Програму запущено");
+            SessionManager sessionManager = clinic.Session;
+
             try
             {
                 Patient invalidPatient = new Patient("", "Тест");
@@ -29,6 +31,7 @@ namespace ClinicApp
             {
                 Console.WriteLine($"Помилка створення пацієнта: {ex.Message}");
             }
+
             Patient p1 = new Patient(
                 "Іван", "Петренко",
                 new DateTime(1985, 5, 10),
@@ -52,7 +55,30 @@ namespace ClinicApp
             clinic.Patients.Add(p3);
             clinic.Patients.Add(p4);
             clinic.Patients.Add(p5);
-            clinic.Logger.LogInfo("Початкових пацієнтів додано: 5");
+
+            if (sessionManager.Exists())
+            {
+                Console.Write("Знайдено збережену сесію. Завантажити? (y/n): ");
+                string answer = (Console.ReadLine() ?? "").Trim().ToLower();
+
+                if (answer == "y")
+                {
+                    int loadedCount = sessionManager.Load(clinic);
+                    Console.WriteLine($"Завантажено {loadedCount} пацієнтів.");
+                }
+            }
+
+                if (sessionManager.Exists())
+                {
+                    Console.Write("Знайдено збережену сесію. Завантажити? (y/n): ");
+                    string answer = (Console.ReadLine() ?? "").Trim().ToLower();
+
+                    if (answer == "y")
+                    {
+                        int loadedCount = sessionManager.Load(clinic);
+                        Console.WriteLine($"Завантажено {loadedCount} пацієнтів.");
+                    }
+            }
 
             Doctor d1 = new Doctor(
                 "Олег", "Сидоренко",
@@ -265,6 +291,14 @@ namespace ClinicApp
 
                 switch (choice)
                 {
+                    case "1":
+                        clinic.Patients.DisplayAll();
+                        clinic.Patients.DisplayStatus();
+                        break;
+                    case "2":
+                        clinic.Doctors.DisplayAll();
+                        clinic.Doctors.DisplayStats();
+                        break;
                     case "3":
                     AppointmentMenu(clinic);
                     break;
@@ -288,7 +322,19 @@ namespace ClinicApp
                     case "9":
                         TreatmentPlanMenu(clinic);
                         break;
+                    case "10":
+                        FilesMenu(clinic);
+                        break;
                     case "0":
+                        Console.Write("Зберегти сесію? (y/n): ");
+                        string answer = (Console.ReadLine() ?? "").Trim().ToLower();
+
+                        if (answer == "y")
+                        {
+                            sessionManager.Save(clinic);
+                            Console.WriteLine("Сесію успішно збережено.");
+                        }
+
                         clinic.Logger.LogInfo("Програму завершено");
                         return;
                     default:
@@ -321,9 +367,6 @@ namespace ClinicApp
                         break;
                     case "3":
                         clinic.Appointments.DisplayList(clinic.Appointments.GetRegular());
-                        break;
-                    case "10":
-                        FilesMenu(clinic);
                         break;
                     case "0":
                         return;
