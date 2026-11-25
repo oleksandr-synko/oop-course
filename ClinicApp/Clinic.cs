@@ -20,6 +20,7 @@ public class Clinic
     public AnalyticsManager Analytics { get; }
     public WaitingQueue<Patient> WaitingRoom { get; }
     public ClinicLogger Logger { get; }
+    public SessionEventTracker EventTracker { get; }
     public PatientPassportWriter PassportWriter { get; }
     public SessionManager Session { get; }
 
@@ -36,6 +37,7 @@ public class Clinic
         WaitingRoom = new WaitingQueue<Patient>();
         Logger = new ClinicLogger();
         PassportWriter = new PatientPassportWriter(this);
+        EventTracker = new SessionEventTracker(this);
         Session = new SessionManager();
         SubscribeEvents();
     }
@@ -99,5 +101,16 @@ public class Clinic
 
         TreatmentPlans.TreatmentPlanCreated += Logger.OnTreatmentPlanCreated;
         TreatmentPlans.PlanCompleted += Logger.OnPlanCompleted;
+
+        Patients.PatientAdded += EventTracker.OnPatientAdded;
+
+        Appointments.AppointmentBooked += EventTracker.OnAppointmentBooked;
+        Appointments.UrgentAppointmentBooked += EventTracker.OnUrgentAppointmentBooked;
+        Appointments.AppointmentCancelled += EventTracker.OnAppointmentCancelled;
+        Appointments.AppointmentCompleted += EventTracker.OnAppointmentCompleted;
+
+        Billing.PaymentReceived += EventTracker.OnPaymentReceived;
+
+        TreatmentPlans.PlanCompleted += EventTracker.OnPlanCompleted;
     }
 }

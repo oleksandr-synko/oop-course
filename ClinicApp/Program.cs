@@ -324,6 +324,9 @@ namespace ClinicApp
                             sessionManager.Save(clinic);
                             Console.WriteLine("Сесію успішно збережено.");
                         }
+                        
+                        clinic.EventTracker.PrintSummary();
+                        clinic.EventTracker.SaveSummary();
 
                         clinic.Logger.LogInfo("Програму завершено");
                         return;
