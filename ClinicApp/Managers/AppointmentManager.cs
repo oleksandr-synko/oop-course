@@ -9,6 +9,9 @@ namespace ClinicApp.Managers;
 public class AppointmentManager
 {
     public event EventHandler<AppointmentEventArgs>? AppointmentBooked;
+    public event EventHandler<AppointmentEventArgs>? AppointmentCancelled;
+    public event EventHandler<AppointmentEventArgs>? AppointmentCompleted;
+    public event EventHandler<AppointmentEventArgs>? UrgentAppointmentBooked;
     private const int MaxAppointments = 50;
     private Appointment[] _appointments = new Appointment[MaxAppointments];
     private int _count;
@@ -73,7 +76,20 @@ public class AppointmentManager
             appointment.DiscountMultiplier = 0.8m;
         }
 
-        return AddAppointment(appointment);
+        if (!AddAppointment(appointment))
+        {
+            return false;
+        }
+
+        UrgentAppointmentBooked?.Invoke(this, new AppointmentEventArgs(
+            appointment.Id,
+            appointment.PatientId,
+            appointment.DoctorId,
+            appointment.ScheduledAt,
+            appointment.Notes
+        ));
+
+        return true;
     }
 
     public bool BookSpecialist(
@@ -134,7 +150,20 @@ public class AppointmentManager
         {
             if(_appointments[i].Id == id)
             {
-                return _appointments[i].Cancel(reason);
+                if (_appointments[i].Cancel(reason))
+                {
+                    AppointmentCancelled?.Invoke(this, new AppointmentEventArgs(
+                        _appointments[i].Id,
+                        _appointments[i].PatientId,
+                        _appointments[i].DoctorId,
+                        _appointments[i].ScheduledAt,
+                        _appointments[i].Notes
+                    ));
+
+                    return true;
+                }
+
+                return false;
             }
         }
         return false;   
@@ -146,7 +175,20 @@ public class AppointmentManager
         {
             if (_appointments[i].Id == id)
             {
-                return _appointments[i].Complete();
+                if (_appointments[i].Complete())
+                {
+                    AppointmentCompleted?.Invoke(this, new AppointmentEventArgs(
+                        _appointments[i].Id,
+                        _appointments[i].PatientId,
+                        _appointments[i].DoctorId,
+                        _appointments[i].ScheduledAt,
+                        _appointments[i].Notes
+                    ));
+
+                    return true;
+                }
+
+                return false;
             }
         }
         return false;
@@ -391,7 +433,7 @@ public class AppointmentManager
         }
     }
 
-    public static int CancelAll(ICancellable[] items, string reason = "")
+    public int CancelAll(ICancellable[] items, string reason = "")
     {
         int cancelledCount = 0;
 
@@ -400,6 +442,17 @@ public class AppointmentManager
             if (item.Cancel(reason))
             {
                 cancelledCount++;
+
+                if (item is Appointment appointment)
+                {
+                    AppointmentCancelled?.Invoke(this, new AppointmentEventArgs(
+                        appointment.Id,
+                        appointment.PatientId,
+                        appointment.DoctorId,
+                        appointment.ScheduledAt,
+                        appointment.Notes
+                    ));
+                }
             }
         }
 

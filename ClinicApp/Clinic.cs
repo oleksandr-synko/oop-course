@@ -3,6 +3,7 @@ using System;
 using ClinicApp.Managers;
 using ClinicApp.Models;
 using ClinicApp.Utils;
+using ClinicApp.Events;
 
 namespace ClinicApp;
 
@@ -34,6 +35,7 @@ public class Clinic
         WaitingRoom = new WaitingQueue<Patient>();
         Logger = new ClinicLogger();
         Session = new SessionManager();
+        SubscribeEvents();
     }
 
     public void DisplaySchedule(DateTime date)
@@ -76,5 +78,17 @@ public class Clinic
         }
 
         Console.WriteLine("╚════════════════════════════════════════════════════╝");
+    }
+
+    public void SubscribeEvents()
+    {
+        Appointments.AppointmentBooked += Logger.OnAppointmentBooked;
+        Appointments.AppointmentCancelled += Logger.OnAppointmentCancelled;
+        Appointments.AppointmentCompleted += Logger.OnAppointmentCompleted;
+        Appointments.UrgentAppointmentBooked += Logger.OnUrgentAppointmentBooked;
+        Patients.PatientAdded += Logger.OnPatientAdded;
+        Billing.PaymentReceived += Logger.OnPaymentReceived;
+        TreatmentPlans.TreatmentPlanCreated += Logger.OnTreatmentPlanCreated;
+        TreatmentPlans.PlanCompleted += Logger.OnPlanCompleted;
     }
 }

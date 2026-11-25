@@ -4,9 +4,11 @@ using System.Linq;
 using ClinicApp.Models;
 using ClinicApp.Enums;
 namespace ClinicApp.Managers;
+using ClinicApp.Events;
 public class PatientManager
 {
     private List<Patient> _patients = new List<Patient>();
+    public event EventHandler<PatientEventArgs>? PatientAdded;
     
     public int Count
     {
@@ -27,6 +29,11 @@ public class PatientManager
     public void Add(Patient patient)
     {
         _patients.Add(patient);
+
+        PatientAdded?.Invoke(this, new PatientEventArgs(
+            patient.Id,
+            patient.FullName
+        ));
     }
 
     public Patient? FindById(int id)
@@ -65,7 +72,7 @@ public class PatientManager
     }
 
 
-        public bool Remove(int id)
+    public bool Remove(int id)
         {
             int index = _patients.FindIndex(p => p.Id == id);
 
@@ -77,6 +84,11 @@ public class PatientManager
             _patients.RemoveAt(index);
             return true;
         }
+
+    public Patient[] GetAll()
+    {
+        return _patients.ToArray();
+    }
 
     public void DisplayAll()
     {

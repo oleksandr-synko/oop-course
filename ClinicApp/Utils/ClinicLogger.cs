@@ -3,6 +3,7 @@ using System.IO;
 using System.Text;
 using System.Linq;
 
+using ClinicApp.Events;
 namespace ClinicApp.Utils;
 
 public class ClinicLogger
@@ -48,5 +49,72 @@ public class ClinicLogger
     public void Clear()
     {
         File.WriteAllText(_logPath, string.Empty);
+    }
+
+    public void OnPatientAdded(object? sender, PatientEventArgs e)
+    {
+        LogInfo($"Додано нового пацієнта: ID {e.PatientId}, {e.FullName}");
+    }
+
+    public void OnAppointmentBooked(object? sender, AppointmentEventArgs e)
+    {
+        LogInfo(
+            $"Створено запис №{e.AppointmentId}. " +
+            $"Пацієнт: №{e.PatientId}, лікар: №{e.DoctorId}, " +
+            $"дата: {e.ScheduledAt:dd.MM.yyyy HH:mm}"
+        );
+    }
+
+    public void OnAppointmentCancelled(object? sender, AppointmentEventArgs e)
+    {
+        LogInfo(
+            $"Скасовано запис №{e.AppointmentId}. " +
+            $"Пацієнт: №{e.PatientId}, лікар: №{e.DoctorId}"
+        );
+    }
+
+    public void OnAppointmentCompleted(object? sender, AppointmentEventArgs e)
+    {
+        LogInfo(
+            $"Завершено прийом №{e.AppointmentId}. " +
+            $"Пацієнт: №{e.PatientId}, лікар: №{e.DoctorId}"
+        );
+    }
+
+    public void OnUrgentAppointmentBooked(object? sender, AppointmentEventArgs e)
+    {
+        string message =
+            $"ТЕРМІНОВИЙ ЗАПИС №{e.AppointmentId}. " +
+            $"Пацієнт: №{e.PatientId}, лікар: №{e.DoctorId}";
+
+        LogWarning(message);
+
+        string directory = "alerts";
+        Directory.CreateDirectory(directory);
+
+        string filePath = Path.Combine(
+            directory,
+            $"urgent_{DateTime.Now:yyyy-MM-dd}.txt"
+        );
+
+        File.AppendAllText(
+            filePath,
+            $"[{DateTime.Now:HH:mm:ss}] {message}{Environment.NewLine}"
+        );
+    }
+
+    public void OnPaymentReceived(object? sender, PaymentEventArgs e)
+    {
+        LogInfo($"Оплачено прийом №{e.AppointmentId}. Сума: {e.Amount:F2}");
+    }
+
+    public void OnTreatmentPlanCreated(object? sender, TreatmentPlanEventArgs e)
+    {
+        LogInfo($"Створено план лікування №{e.PlanId} для пацієнта №{e.PatientId}. Діагноз: {e.Diagnosis}");
+    }
+
+    public void OnPlanCompleted(object? sender, TreatmentPlanEventArgs e)
+    {
+        LogInfo($"Завершено план лікування №{e.PlanId} для пацієнта №{e.PatientId}. Діагноз: {e.Diagnosis}");
     }
 }

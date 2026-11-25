@@ -196,9 +196,9 @@ namespace ClinicApp
                 .Cast<Appointment>()
                 .ToArray();
 
-            int cancelledCount = AppointmentManager.CancelAll(
-                patientAppointments,
-                "Масове скасування записів");
+            int cancelledCount = clinic.Appointments.CancelAll(
+            patientAppointments,
+            "Масове скасування записів");
 
             Console.WriteLine($"Скасовано записів пацієнта №1: {cancelledCount}");
 
@@ -809,7 +809,6 @@ namespace ClinicApp
                     if (clinic.Billing.PayAppointment(appointmentId))
                     {
                         Console.WriteLine($"Запис [{appointmentId}] оплачено.");
-                        clinic.Logger.LogInfo($"Оплачено запис ID: {appointmentId}");
                     }
                     else
                     {
@@ -1056,7 +1055,7 @@ namespace ClinicApp
                                     {
                                         Console.WriteLine("План не знайдено.");
                                     }
-                                    else if (plan.Complete())
+                                    else if (clinic.TreatmentPlans.Complete(completeId))
                                     {
                                         Console.WriteLine("План завершено.");
                                     }
